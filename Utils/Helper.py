@@ -1,5 +1,8 @@
 import mne
 import numpy as np 
+from mne.preprocessing import ICA
+from mne.io import concatenate_raws
+
 
 
 def load_eeg_data(file_paths):
@@ -83,3 +86,25 @@ def verify_simulation_with_diff(simulated_features, diff_features):
             simulated_features[region] - diff_features[region], axis=0)
         verification_results[region] = np.linalg.norm(simulated_diff)
     return verification_results
+
+
+def preprocess_eeg(raw, eog_ch_names=None):
+    raw.set_eeg_reference('average', projection=True)
+
+    raw.filter(0.1, 40., fir_design='firwin')
+
+    ica = ICA(n_components=15, random_state=97)
+    ica.fit(raw)
+
+    if eog_ch_names:
+        eog_indices, eog_scores = ica.find_bads_eog(raw, ch_name=eog_ch_names)
+        ica.exclude = eog_indices
+    else:
+        print("No EOG channels specified, skipping EOG artifact detection.")
+
+    print("Skipping ECG artifact detection.")
+
+    raw = ica.apply(raw)
+
+    return raw
+
