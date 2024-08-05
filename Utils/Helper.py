@@ -1,8 +1,7 @@
-import mne
+import mne 
 import numpy as np 
 from mne.preprocessing import ICA
 from mne.io import concatenate_raws
-
 
 
 def load_eeg_data(file_paths):
