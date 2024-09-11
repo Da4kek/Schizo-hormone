@@ -1,4 +1,2 @@
-from .Modulator import SerotoninEEGModulator
-from .Trainer import SerotoninESNTrainer
+from .Modulator import modulation
 from .Encode import SpikeEncoder
-from STDP import STDPNetwork
